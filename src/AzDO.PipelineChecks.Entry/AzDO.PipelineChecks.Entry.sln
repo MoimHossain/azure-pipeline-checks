@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35424.110 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDO.PipelineChecks.Entry", "AzDO.PipelineChecks.Entry\AzDO.PipelineChecks.Entry.csproj", "{1F356373-DB6B-424E-BC31-1F01306DDCCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDO.PipelineChecks.Shared", "AzDO.PipelineChecks.Shared\AzDO.PipelineChecks.Shared.csproj", "{F9850011-A755-48E3-9CB8-3FF5EFF0A03B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F356373-DB6B-424E-BC31-1F01306DDCCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F356373-DB6B-424E-BC31-1F01306DDCCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F356373-DB6B-424E-BC31-1F01306DDCCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F356373-DB6B-424E-BC31-1F01306DDCCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9850011-A755-48E3-9CB8-3FF5EFF0A03B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9850011-A755-48E3-9CB8-3FF5EFF0A03B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9850011-A755-48E3-9CB8-3FF5EFF0A03B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9850011-A755-48E3-9CB8-3FF5EFF0A03B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
