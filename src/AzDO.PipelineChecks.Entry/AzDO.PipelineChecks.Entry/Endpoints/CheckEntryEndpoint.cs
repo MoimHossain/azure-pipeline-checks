@@ -16,14 +16,21 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
             ILogger<CheckEntryEndpoint> logger,
             CancellationToken cancellationToken)
         {
-            httpHeaderTraceClient.TraceHeaders(context);
-            
-            var payload = RequestPayload.ReadFromRequestHeader(context.Request.Headers);
-            
-            var envelope = new Envelope<RequestPayload>(payload);
-            await integrationService.InvokeAsync(Integrations.RequestAccepted, envelope, cancellationToken);
+            try
+            {
+                httpHeaderTraceClient.TraceHeaders(context);
 
-            return Results.Accepted<string>(value: "hi");
+                var payload = RequestPayload.ReadFromRequestHeader(context.Request.Headers);
+
+                var envelope = new Envelope<RequestPayload>(payload);
+                await integrationService.InvokeAsync(Integrations.RequestAccepted, envelope, cancellationToken);
+                return Results.Accepted<string>(value: "hi");
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error processing request");
+                return Results.Problem(e.Message); // fix this later
+            }
         }
     }
 }

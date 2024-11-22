@@ -1,7 +1,6 @@
 ﻿
 
 using AzDO.PipelineChecks.Shared;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AzDO.PipelineChecks.Entry.Endpoints
 {

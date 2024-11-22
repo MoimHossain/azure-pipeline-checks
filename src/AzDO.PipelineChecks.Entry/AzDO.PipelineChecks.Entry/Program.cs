@@ -22,7 +22,8 @@ apiGroup.MapPost("/begin-validation", CheckEntryEndpoint.Handler)
 
 apiGroup.MapPost("/process", LisenerEndpoint.Handler)
     .WithName("Process Pipeline Validation")
-    .WithDisplayName("Process Pipeline Validation").WithOpenApi();
+    .WithDisplayName("Process Pipeline Validation")    
+    .WithOpenApi();
 
 var daprApiGroup = app.MapGroup("dapr");
 daprApiGroup.MapGet("/subscribe", DaprSubscriptionEndpoint.Handler)
