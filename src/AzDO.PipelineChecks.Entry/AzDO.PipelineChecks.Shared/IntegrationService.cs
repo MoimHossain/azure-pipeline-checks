@@ -19,13 +19,13 @@ namespace AzDO.PipelineChecks.Shared
                 payload, cancellationToken);
         }
 
-        public async Task PublishValidationCompletedEventAsync(ValidationResult validationResult, CancellationToken cancellationToken)
+        public async Task PublishValidationCompletedEventAsync(CheckKind checkKind, ValidationResult validationResult, CancellationToken cancellationToken)
         {
             logger.LogInformation("Publishing ValidationCompleted event {BuildId}", validationResult.BuildId);
 
             var completedEvent = new ValidationCompletedEvent
             {
-                CheckKind = CheckKind.WorkItem,
+                CheckKind = checkKind,
                 BuildId = validationResult.BuildId,
                 Errors = validationResult.Errors,
                 IsValid = validationResult.IsValid,

@@ -8,6 +8,43 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
 {
     public class StateStoreService(DaprClient daprClient, ILogger<StateStoreService> logger)
     {
+        public async Task<OutcomeDto?> GetOutcomeAsync(
+            int definitionId, int buildId, CancellationToken cancellationToken)
+        {
+            OutcomeDto? outcome = default;
+            try
+            {
+                logger.LogInformation("Getting outcome for {DefinitionId}-{BuildId}", definitionId, buildId);
+
+                var rowKey = $"{definitionId}-{buildId}";
+                outcome = await daprClient.GetStateAsync<OutcomeDto>(
+                                Constants.Dapr.State.CheckOutcomes,
+                                rowKey,
+                                cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting outcome");
+            }
+            return outcome;
+        }
+
+        public async Task SaveOutcomeAsync(
+            OutcomeDto outcome,            
+            CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Saving (overwrite) outcome for {DefinitionId}-{BuildId}", outcome.DefinitionId, outcome.BuildId);
+
+            var rowKey = $"{outcome.DefinitionId}-{outcome.BuildId}";
+
+            await daprClient.SaveStateAsync(
+                Constants.Dapr.State.CheckOutcomes,
+                rowKey,
+                outcome,
+                new StateOptions { Consistency = ConsistencyMode.Strong },
+                cancellationToken: cancellationToken);
+        }
+
         public async Task SaveWorkItemValidationResultAsync(
             WorkItemValidationResult workItemValidationResult,
             ValidationArguments validationArguments,
@@ -41,6 +78,44 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error while getting work item validation result");
+            }
+            return result;
+        }
+
+
+        public async Task SaveChangeValidationResultAsync(
+            ChangeValidationResult changeValidationResult,
+            ValidationArguments validationArguments,
+            CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Saving (overwrite) Change validation result: {BuildId}", changeValidationResult.BuildId);
+
+            var rowKey = changeValidationResult.GetRowKey();
+
+            await daprClient.SaveStateAsync(
+                Constants.Dapr.State.ChangeValidations,
+                rowKey,
+                changeValidationResult,
+                new StateOptions { Consistency = ConsistencyMode.Strong },
+                cancellationToken: cancellationToken);
+        }
+
+        public async Task<ChangeValidationResult?> GetChangeValidationResultAsync(
+            ValidationArguments validationArguments, CancellationToken cancellationToken)
+        {
+            ChangeValidationResult? result = default;
+            try
+            {
+                logger.LogInformation("Getting Change validation result for {BuildId}", validationArguments.BuildId);
+                var rowKey = ChangeValidationResult.CreateFrom(validationArguments).GetRowKey();
+                result = await daprClient.GetStateAsync<ChangeValidationResult>(
+                                Constants.Dapr.State.ChangeValidations,
+                                rowKey,
+                                cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting Change validation result");
             }
             return result;
         }

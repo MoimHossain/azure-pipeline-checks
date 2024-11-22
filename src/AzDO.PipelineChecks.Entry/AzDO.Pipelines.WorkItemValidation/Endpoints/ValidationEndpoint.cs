@@ -35,7 +35,7 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
                     logger.LogInformation("Validation result already exists for {BuildId}", validationArguments.BuildId);
                 }
 
-                await integrationService.PublishValidationCompletedEventAsync(validationResult, cancellationToken);
+                await integrationService.PublishValidationCompletedEventAsync(CheckKind.WorkItem, validationResult, cancellationToken);
             }
             else
             {
