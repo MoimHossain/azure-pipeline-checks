@@ -7,13 +7,14 @@ namespace AzDO.PipelineChecks.Shared
 {
     public class IntegrationService(DaprClient daprClient, ILogger<IntegrationService> logger)
     {
-        public async Task InvokeAsync(
-            string targetName, object payload, CancellationToken cancellationToken)
+        public async Task InvokeAsync(object payload, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Invoking integration {targetName}", targetName);
+            logger.LogInformation("Invoking integration with payload: {payload}", payload);
 
-
-            await daprClient.PublishEventAsync("azdo-pipeline-check-entry", "entryrequests", payload);
+            await daprClient.PublishEventAsync(
+                Constants.DaprComponents.PubSubEntry, 
+                Constants.DaprComponents.Topic, 
+                payload);
         }
     }
 }

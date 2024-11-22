@@ -1,5 +1,6 @@
 
-@HOST=http://localhost:5294
+#@HOST=http://localhost:5294
+@HOST=https://check-entry.happydune-020741a4.northeurope.azurecontainerapps.io
 
 ### POST /api/begin-validation
 POST {{HOST}}/api/begin-validation
@@ -21,7 +22,7 @@ CheckStageAttempt: 1
 CheckStageId: ae4f8708-9994-57d3-c2d7-b892156e7812
 
 {
-    
+
 }
 
 

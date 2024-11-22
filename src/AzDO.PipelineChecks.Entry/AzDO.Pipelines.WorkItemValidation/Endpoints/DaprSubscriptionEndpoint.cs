@@ -1,8 +1,7 @@
 ﻿
-
 using AzDO.PipelineChecks.Shared;
 
-namespace AzDO.PipelineChecks.Entry.Endpoints
+namespace AzDO.Pipelines.WorkItemValidation.Endpoints
 {
     public class DaprSubscriptionEndpoint
     {
@@ -18,12 +17,12 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
             return new List<object>
             {
                 new {
-                    pubsubname = "azdo-pipeline-check-entry-listener",
-                    topic = "entryrequests",
+                    pubsubname = Constants.DaprComponents.PubSubEntrySubscription,
+                    topic = Constants.DaprComponents.Topic,
                     route = "/api/process"
                 }
             };
- 
+
         }
     }
 }

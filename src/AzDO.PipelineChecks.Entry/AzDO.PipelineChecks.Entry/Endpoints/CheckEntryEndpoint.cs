@@ -23,7 +23,7 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 var payload = RequestPayload.ReadFromRequestHeader(context.Request.Headers);
 
                 var envelope = new Envelope<RequestPayload>(payload);
-                await integrationService.InvokeAsync(Integrations.RequestAccepted, envelope, cancellationToken);
+                await integrationService.InvokeAsync(envelope, cancellationToken);
                 return Results.Accepted<string>(value: "hi");
             }
             catch (Exception e)
