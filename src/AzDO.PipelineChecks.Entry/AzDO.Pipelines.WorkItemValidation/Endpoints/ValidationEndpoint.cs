@@ -1,5 +1,6 @@
 ﻿
 
+using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
 using AzDO.PipelineChecks.Shared.StateManagement;
 using AzDO.PipelineChecks.Shared.ValidationDto;
@@ -12,6 +13,7 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
         public static async Task<object> Handler(
             [FromBody] Envelope<HttpHeaderCollection> envelope,
             [FromServices] ILogger<ValidationEndpoint> logger,
+            [FromServices] IntegrationService integrationService,
             [FromServices] StateStoreService stateStoreService,
             CancellationToken cancellationToken)
         {
@@ -21,11 +23,21 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
 
                 var validationArguments = ValidationArguments.ReadFromRequestHeader(envelope.Data);
 
-                var validationResult = WorkItemValidationResult.CreateFrom(validationArguments, isValid: true);
+                var validationResult = await stateStoreService.GetWorkItemValidationResultAsync(validationArguments, cancellationToken);
+                if (validationResult == null)
+                {
+                    validationResult = WorkItemValidationResult.CreateFrom(validationArguments, isValid: true);
 
-                await stateStoreService.SaveWorkItemValidationResultAsync(validationResult, validationArguments, cancellationToken);
+                    await stateStoreService.SaveWorkItemValidationResultAsync(validationResult, validationArguments, cancellationToken);
+                }
+                else
+                {
+                    logger.LogInformation("Validation result already exists for {BuildId}", validationArguments.BuildId);
+                }
+
+                await integrationService.PublishValidationCompletedEventAsync(validationResult, cancellationToken);
             }
-            else 
+            else
             {
                 logger.LogWarning("Received empty or invalid validation request");
             }

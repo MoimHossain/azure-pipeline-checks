@@ -25,7 +25,7 @@ apiGroup.MapPost("/validate", ValidationEndpoint.Handler)
     .WithOpenApi();
 
 var daprApiGroup = app.MapGroup("dapr");
-var endpoint = new DaprSubscriptionEndpoint(Constants.Dapr.Sub.WorkItem, Constants.Dapr.Topic);
+var endpoint = new DaprSubscriptionEndpoint(Constants.Dapr.Sub.WorkItem, Constants.Dapr.Topic_RequestReceived);
 daprApiGroup.MapGet("/subscribe", endpoint.Handler)
     .WithName("Dapr Subscribe")
     .WithDisplayName("Dapr Subscribe").WithOpenApi();

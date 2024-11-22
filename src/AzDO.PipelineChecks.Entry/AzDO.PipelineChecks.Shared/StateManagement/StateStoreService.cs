@@ -13,27 +13,16 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             ValidationArguments validationArguments,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("Saving (if not exists) work item validation result: {BuildId}", workItemValidationResult.BuildId);
+            logger.LogInformation("Saving (overwrite) work item validation result: {BuildId}", workItemValidationResult.BuildId);
 
             var rowKey = workItemValidationResult.GetRowKey();
 
-            var existingResult = await GetWorkItemValidationResultAsync(validationArguments, cancellationToken);
-
-            if (existingResult == null)
-            {
-                logger.LogInformation("Creating new work item validation result for {BuildId}", validationArguments.BuildId);
-
-                await daprClient.SaveStateAsync(
-                    Constants.Dapr.State.WorkItemValidations,
-                    rowKey,
-                    workItemValidationResult,
-                    new StateOptions { Consistency = ConsistencyMode.Strong },
-                    cancellationToken: cancellationToken);
-            }
-            else 
-            {
-                logger.LogInformation("Work item validation result already exists for {BuildId}", validationArguments.BuildId);
-            }
+            await daprClient.SaveStateAsync(
+                Constants.Dapr.State.WorkItemValidations,
+                rowKey,
+                workItemValidationResult,
+                new StateOptions { Consistency = ConsistencyMode.Strong },
+                cancellationToken: cancellationToken);
         }
 
         public async Task<WorkItemValidationResult?> GetWorkItemValidationResultAsync(

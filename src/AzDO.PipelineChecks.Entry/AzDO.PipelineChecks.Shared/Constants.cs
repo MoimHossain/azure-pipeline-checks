@@ -6,8 +6,10 @@ namespace AzDO.PipelineChecks.Shared
     {
         public class Dapr
         {
-            public const string PubSub_Entry = "azdo.pipeline.check.entry";            
-            public const string Topic = "entryrequests";
+            public const string PubSub_Entry = "azdo.pipeline.check.entry";
+            public const string PubSub_ValidationOutcome = "azdo.pipeline.check.outcome";
+            public const string Topic_RequestReceived = "entryrequests";
+            public const string Topic_RequestEvaluated = "requestevaluated";
 
             public class Sub
             {

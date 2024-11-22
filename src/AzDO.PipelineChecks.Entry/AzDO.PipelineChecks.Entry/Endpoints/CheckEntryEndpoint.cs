@@ -21,7 +21,7 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
 
                 var payload = context.Request.Headers.From();
 
-                await integrationService.PublishEventAsync(payload, cancellationToken);
+                await integrationService.PublishCheckEntryEventAsync(payload, cancellationToken);
                 
                 return Results.Accepted("Pipeline Check request received successfully.");
             }

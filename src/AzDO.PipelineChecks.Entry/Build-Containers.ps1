@@ -1,6 +1,6 @@
 clear
 # define a string variable in powershell and assign the value to "0.0.4"
-$containerTag = "v0.0.2"
+$containerTag = "v0.0.1"
 
 Write-Host "Building Containers with $containerTag tag"
 Write-Host "========================================"
