@@ -14,6 +14,11 @@ namespace AzDO.PipelineChecks.Shared
                 public const string WorkItem = "azdo.pipeline.check.workitem.validation";
                 public const string Change = "azdo.pipeline.check.change.validation";
             }
+
+            public class State
+            {
+                public const string WorkItemValidations = "azdo.pipeline.workitem.validations";
+            }
         }
     }
 }
