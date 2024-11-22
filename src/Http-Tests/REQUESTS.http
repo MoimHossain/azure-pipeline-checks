@@ -26,3 +26,56 @@ CheckStageId: ae4f8708-9994-57d3-c2d7-b892156e7812
 }
 
 
+### 
+POST https://localhost:7146/api/validate
+Content-Type: application/json
+
+{
+    "data": {
+        "headers": {
+            "Accept-Encoding": "gzip, deflate",
+            "Content-Length": "6",
+            "Content-Type": "application/json",
+            "Host": "check-entry.happydune-020741a4.northeurope.azurecontainerapps.io",
+            "User-Agent": "vscode-restclient",
+            "authtoken": "system.AccessToken",
+            "buildid": "14",
+            "checkstageattempt": "1",
+            "checkstageid": "ae4f8708-9994-57d3-c2d7-b892156e7812",
+            "definitionid": "114",
+            "hubname": "checks",
+            "jobid": "c01fb231-6680-4e01-b943-9e3a42b74fff",
+            "planid": "0bbe239c-c984-4078-9941-14bdf496104b",
+            "planurl": "https://dev.azure.com/moim/dummy-data",
+            "projectid": "9e7c66dc-425c-4b9b-8d4b-0c1003a38538",
+            "stageattempt": "1",
+            "stageid": "ae4f8708-9994-57d3-c2d7-b892156e7812",
+            "stagename": "CI",
+            "taskinstanceid": "2adeda05-54ed-5c53-f4b3-2fb525d6dc59",
+            "timelineid": "e1df4cee-bd72-5cc5-6807-26db883fdfb0",
+            "x-arr-ssl": "true",
+            "x-envoy-expected-rq-timeout-ms": "1800000",
+            "x-envoy-external-address": "84.87.237.145",
+            "x-forwarded-for": "84.87.237.145",
+            "x-forwarded-proto": "https",
+            "x-k8se-app-kind": "web",
+            "x-k8se-app-name": "check-entry--6k344qq",
+            "x-k8se-app-namespace": "k8se-apps",
+            "x-k8se-protocol": "http1",
+            "x-ms-containerapp-name": "check-entry",
+            "x-ms-containerapp-revision-name": "check-entry--6k344qq",
+            "x-request-id": "2c38092f-d998-47b4-a1d0-1235d25bd2e5"
+        }
+    },
+    "datacontenttype": "application/json",
+    "id": "eeff49f6-2fd1-4d3a-a559-bdcca965acf2",
+    "pubsubname": "azdo.pipeline.check.entry",
+    "source": "check-entry",
+    "specversion": "1.0",
+    "time": "2024-11-22T08:13:01Z",
+    "topic": "entryrequests",
+    "traceid": "00-7e9d62c8c3d107fa408a924256009781-8364e2a03782a5e9-01",
+    "traceparent": "00-7e9d62c8c3d107fa408a924256009781-8364e2a03782a5e9-01",
+    "tracestate": "",
+    "type": "com.dapr.event.sent"
+}

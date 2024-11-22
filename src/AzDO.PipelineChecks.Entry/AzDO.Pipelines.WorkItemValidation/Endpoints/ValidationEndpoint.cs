@@ -10,25 +10,17 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
 {
     public class ValidationEndpoint
     {
-        public static async Task<object> Handler(
-            HttpContext context,
+        public static async Task<object> Handler(            
+            [FromBody]Envelope<HttpHeaderCollection> envelope,
             ILogger<ValidationEndpoint> logger,
             CancellationToken cancellationToken)
         {
-            // read the body
-            var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-            logger.LogInformation("Received request with body: {body}", body);
-
-            //if (envelope != null) 
+            if (envelope != null && envelope.Data != null) 
             {
-                
-
-                //var validationArguments = ValidationArguments.ReadFromRequestHeader(envelope.Data);
+                var validationArguments = ValidationArguments.ReadFromRequestHeader(envelope.Data);
                 await Task.CompletedTask;
-                //logger.LogInformation("Validation arguments: {arguments}", JsonSerializer.Serialize(validationArguments));
-            } 
-            
-
+                logger.LogInformation("Validation arguments: {arguments}", JsonSerializer.Serialize(validationArguments));
+            }
             return new { Ok = true };
         }
     }
