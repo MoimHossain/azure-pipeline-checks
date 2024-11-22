@@ -1,5 +1,6 @@
 ﻿
 
+using AzDO.PipelineChecks.Shared.PipelineServices;
 using AzDO.PipelineChecks.Shared.StateManagement;
 using AzDO.PipelineChecks.Shared.Utils;
 using Dapr.Client;
@@ -57,6 +58,7 @@ namespace AzDO.PipelineChecks.Shared
                 services.AddSingleton<HttpHeaderTraceClient>();
                 services.AddSingleton<IntegrationService>();
                 services.AddSingleton<StateStoreService>();
+                services.AddSingleton<PipelineService>();
             }
             await Task.CompletedTask;
         }

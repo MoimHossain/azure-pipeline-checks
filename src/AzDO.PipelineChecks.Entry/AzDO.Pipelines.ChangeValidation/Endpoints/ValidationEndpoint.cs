@@ -2,6 +2,7 @@
 
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
+using AzDO.PipelineChecks.Shared.PipelineServices;
 using AzDO.PipelineChecks.Shared.StateManagement;
 using AzDO.PipelineChecks.Shared.ValidationDto;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
             [FromServices] ILogger<ValidationEndpoint> logger,
             [FromServices] IntegrationService integrationService,
             [FromServices] StateStoreService stateStoreService,
+            [FromServices] PipelineService pipelineService,
             CancellationToken cancellationToken)
         {
             if (envelope != null && envelope.Data != null)
@@ -26,13 +28,17 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
                 var validationResult = await stateStoreService.GetChangeValidationResultAsync(validationArguments, cancellationToken);
                 if (validationResult == null)
                 {
+                    // TODO - Implement validation logic here
+
                     validationResult = ChangeValidationResult.CreateFrom(validationArguments, isValid: true);
 
                     await stateStoreService.SaveChangeValidationResultAsync(validationResult, validationArguments, cancellationToken);
+                    await pipelineService.ReportTaskProgressAsync("Change validation completed", envelope.Data, cancellationToken);
                 }
                 else
                 {
                     logger.LogInformation("Validation result already exists for {BuildId}", validationArguments.BuildId);
+                    await pipelineService.ReportTaskProgressAsync("Change validation (skipping)", envelope.Data, cancellationToken);
                 }
 
                 await integrationService.PublishValidationCompletedEventAsync( CheckKind.Change, validationResult, cancellationToken);

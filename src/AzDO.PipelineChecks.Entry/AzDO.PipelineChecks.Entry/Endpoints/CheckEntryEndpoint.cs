@@ -2,6 +2,7 @@
 
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
+using AzDO.PipelineChecks.Shared.PipelineServices;
 using AzDO.PipelineChecks.Shared.Utils;
 
 namespace AzDO.PipelineChecks.Entry.Endpoints
@@ -12,6 +13,7 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
             HttpContext context,
             IntegrationService integrationService,
             HttpHeaderTraceClient httpHeaderTraceClient,
+            PipelineService pipelineService,
             ILogger<CheckEntryEndpoint> logger,
             CancellationToken cancellationToken)
         {
@@ -22,7 +24,9 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 var payload = context.Request.Headers.From();
 
                 await integrationService.PublishCheckEntryEventAsync(payload, cancellationToken);
-                
+
+                await pipelineService.ReportTaskBegingAsync(payload, cancellationToken);
+
                 return Results.Accepted("Pipeline Check request received successfully.");
             }
             catch (Exception e)
@@ -33,62 +37,3 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//public class TaskExecution
-//{
-//    public async Task ExecuteAsync(RequestPayload taskProperties, CancellationToken cancellationToken)
-//    {
-//        TaskLogService? taskLogger = null;
-//        using var taskClient = new TaskClient(taskProperties);
-//        var taskResult = TaskResult.Succeeded;
-//        try
-//        {
-//            // create timeline record if not provided
-//            taskLogger = new TaskLogService(taskProperties, taskClient);
-//            await taskLogger.CreateTaskTimelineRecordIfRequired(taskClient, cancellationToken).ConfigureAwait(false);
-
-//            // report task started
-//            await taskLogger.LogImmediately("Task started");
-//            await taskClient.ReportTaskStarted(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);
-//            await Task.Delay(1000);
-//            await taskClient.ReportTaskProgress(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);
-
-//            await Task.Delay(1000);
-//            // report task completed with status
-//            await taskLogger.LogImmediately("Task completed");
-//            await taskClient.ReportTaskCompleted(taskProperties.TaskInstanceId, taskResult, cancellationToken).ConfigureAwait(false);
-//        }
-//        catch (Exception e)
-//        {
-//            if (taskLogger != null)
-//            {
-//                await taskLogger.Log(e.ToString()).ConfigureAwait(false);
-//            }
-
-//            await taskClient.ReportTaskCompleted(taskProperties.TaskInstanceId, taskResult, cancellationToken).ConfigureAwait(false);
-//            throw;
-//        }
-//        finally
-//        {
-//            if (taskLogger != null)
-//            {
-//                await taskLogger.End().ConfigureAwait(false);
-//            }
-//        }
-//    }
-//}
