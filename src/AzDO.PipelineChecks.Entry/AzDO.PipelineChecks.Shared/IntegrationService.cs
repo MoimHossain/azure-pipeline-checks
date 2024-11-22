@@ -1,5 +1,6 @@
 ﻿
 
+using AzDO.PipelineChecks.Shared.Messaging;
 using AzDO.PipelineChecks.Shared.ValidationDto;
 using Dapr.Client;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,7 @@ namespace AzDO.PipelineChecks.Shared
 {
     public class IntegrationService(DaprClient daprClient, ILogger<IntegrationService> logger)
     {
-        public async Task PublishCheckEntryEventAsync(object payload, CancellationToken cancellationToken)
+        public async Task PublishCheckEntryEventAsync(HttpHeaderCollection payload, CancellationToken cancellationToken)
         {
             logger.LogInformation("Publishing CheckEntry event {payload}", payload);
 

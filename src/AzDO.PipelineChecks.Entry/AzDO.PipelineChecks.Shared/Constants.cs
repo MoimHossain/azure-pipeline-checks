@@ -15,6 +15,7 @@ namespace AzDO.PipelineChecks.Shared
             {
                 public const string WorkItem = "azdo.pipeline.check.workitem.validation";
                 public const string Change = "azdo.pipeline.check.change.validation";
+                public const string OutcomeAggragator = "azdo.pipeline.check.outcome.consumer";
             }
 
             public class State
