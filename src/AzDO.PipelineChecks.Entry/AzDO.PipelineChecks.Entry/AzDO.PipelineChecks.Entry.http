@@ -1,6 +1,0 @@
-@AzDO.PipelineChecks.Entry_HostAddress = http://localhost:5294
-
-GET {{AzDO.PipelineChecks.Entry_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

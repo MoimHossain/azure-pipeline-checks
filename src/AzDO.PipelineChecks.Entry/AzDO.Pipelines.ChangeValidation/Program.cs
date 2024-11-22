@@ -1,8 +1,7 @@
 
-
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Endpoints;
-using AzDO.Pipelines.WorkItemValidation.Endpoints;
+using AzDO.Pipelines.ChangeValidation.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +24,10 @@ apiGroup.MapPost("/validate", ValidationEndpoint.Handler)
     .WithOpenApi();
 
 var daprApiGroup = app.MapGroup("dapr");
-var endpoint = new DaprSubscriptionEndpoint(Constants.Dapr.Sub.WorkItem, Constants.Dapr.Topic);
+var endpoint = new DaprSubscriptionEndpoint(Constants.Dapr.Sub.Change, Constants.Dapr.Topic);
 daprApiGroup.MapGet("/subscribe", endpoint.Handler)
     .WithName("Dapr Subscribe")
     .WithDisplayName("Dapr Subscribe").WithOpenApi();
 
 
 app.Run();
-

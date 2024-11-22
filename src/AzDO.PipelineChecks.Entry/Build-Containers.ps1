@@ -1,6 +1,6 @@
 clear
 # define a string variable in powershell and assign the value to "0.0.4"
-$containerTag = "v0.0.1"
+$containerTag = "v0.0.2"
 
 Write-Host "Building Containers with $containerTag tag"
 Write-Host "========================================"
@@ -18,5 +18,11 @@ docker build -t moimhossain/azdo-checkv2-workitem-validation:$containerTag -f ./
 docker push moimhossain/azdo-checkv2-workitem-validation:$containerTag
 az containerapp update --resource-group ING-CHECK-V2 --name workitem-validation --image moimhossain/azdo-checkv2-workitem-validation:$containerTag
 
+
+
+Write-Host "Building AzDO.Pipelines.ChangeValidation container"
+docker build -t moimhossain/azdo-checkv2-change-validation:$containerTag -f ./AzDO.Pipelines.ChangeValidation/Dockerfile .
+docker push moimhossain/azdo-checkv2-change-validation:$containerTag
+az containerapp update --resource-group ING-CHECK-V2 --name change-validation --image moimhossain/azdo-checkv2-change-validation:$containerTag
 
 

@@ -3,7 +3,6 @@
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
 using AzDO.PipelineChecks.Shared.Utils;
-using System.Text.Json;
 
 namespace AzDO.PipelineChecks.Entry.Endpoints
 {
@@ -21,10 +20,8 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 httpHeaderTraceClient.TraceHeaders(context);
 
                 var payload = context.Request.Headers.From();
-                
-                logger.LogInformation("Sending payload: {payload}", payload);
 
-                await integrationService.InvokeAsync(payload, cancellationToken);
+                await integrationService.PublishEventAsync(payload, cancellationToken);
                 
                 return Results.Accepted("Pipeline Check request received successfully.");
             }

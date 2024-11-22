@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>92dea4aa-bb9b-4ed6-9f8a-9212fff1a84e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+		<PackageReference Include="Microsoft.TeamFoundation.DistributedTask.WebApi" Version="16.170.0" />
+		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.170.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AzDO.PipelineChecks.Shared\AzDO.PipelineChecks.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

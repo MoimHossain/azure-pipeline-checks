@@ -1,6 +1,0 @@
-@AzDO.Pipelines.WorkItemValidation_HostAddress = http://localhost:5221
-
-GET {{AzDO.Pipelines.WorkItemValidation_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
