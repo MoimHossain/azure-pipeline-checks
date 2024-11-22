@@ -54,6 +54,20 @@ namespace AzDO.PipelineChecks.Shared.Payloads
             CheckStageAttemptKey
         };
 
+        public RequestPayload() 
+        {
+            ProjectId = Guid.Empty;
+            HubName = string.Empty;
+            PlanId = Guid.Empty;
+            PlanUri = new Uri("https://microsoft.com");
+            JobId = Guid.Empty;
+            TimelineId = Guid.Empty;
+            TaskInstanceId = Guid.Empty;
+            TaskInstanceName = string.Empty;
+            AuthToken = string.Empty;
+            RequestType = RequestType.Execute;
+            MessageProperties = [];
+        }
 
         public RequestPayload(
             Guid projectId, string? hubName,

@@ -1,5 +1,7 @@
 ﻿
 
+using AzDO.PipelineChecks.Shared.Utils;
+using Dapr.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +20,8 @@ namespace AzDO.PipelineChecks.Shared
                 services.AddEndpointsApiExplorer();
                 services.AddHttpClient();
                 services.AddSwaggerGen();
+
+
 
                 services.AddCors(options =>
                 {
@@ -47,6 +51,10 @@ namespace AzDO.PipelineChecks.Shared
                     jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     return jsonSerializerOptions;
                 });
+
+                services.AddSingleton(new DaprClientBuilder().Build());
+                services.AddSingleton<HttpHeaderTraceClient>();
+                services.AddSingleton<IntegrationService>();
             }
             await Task.CompletedTask;
         }

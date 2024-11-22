@@ -11,7 +11,7 @@ namespace AzDO.PipelineChecks.Shared.Utils
         private readonly RequestPayload payload;
 
         private int byteCount;
-        private int pageCount;
+        
         private readonly string pageId;
         private MemoryStream? pageData;
         private StreamWriter? pageWriter;

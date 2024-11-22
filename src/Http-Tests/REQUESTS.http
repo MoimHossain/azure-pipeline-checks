@@ -1,0 +1,27 @@
+
+@HOST=http://localhost:5294
+
+### POST /api/begin-validation
+POST {{HOST}}/api/begin-validation
+Content-Type: application/json
+PlanUrl: https://dev.azure.com/moim/dummy-data
+ProjectId: 9e7c66dc-425c-4b9b-8d4b-0c1003a38538
+HubName: checks
+PlanId: 0bbe239c-c984-4078-9941-14bdf496104b
+JobId: c01fb231-6680-4e01-b943-9e3a42b74fff
+TimelineId: e1df4cee-bd72-5cc5-6807-26db883fdfb0
+TaskInstanceId: 2adeda05-54ed-5c53-f4b3-2fb525d6dc59
+AuthToken: system.AccessToken
+StageId: ae4f8708-9994-57d3-c2d7-b892156e7812
+DefinitionId: 114
+StageName: CI
+BuildId: 14
+StageAttempt: 1
+CheckStageAttempt: 1
+CheckStageId: ae4f8708-9994-57d3-c2d7-b892156e7812
+
+{
+    
+}
+
+
