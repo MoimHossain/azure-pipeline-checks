@@ -1,6 +1,6 @@
 ﻿
 
-using AzDO.PipelineChecks.Shared.Payloads;
+using AzDO.PipelineChecks.Shared.ValidationDto;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using System.Text;
 
@@ -8,7 +8,7 @@ namespace AzDO.PipelineChecks.Shared.Utils
 {
     public class TaskLogService
     {
-        private readonly RequestPayload payload;
+        private readonly ValidationArguments payload;
 
         private int byteCount;
         
@@ -20,7 +20,7 @@ namespace AzDO.PipelineChecks.Shared.Utils
         // 8 MB
         private const int PageSize = 8 * 1024 * 1024;
 
-        public TaskLogService(RequestPayload payload, TaskClient taskClient)
+        public TaskLogService(ValidationArguments payload, TaskClient taskClient)
         {
             this.payload = payload;
             this.taskClient = taskClient;

@@ -1,10 +1,11 @@
 ﻿
 
+using AzDO.PipelineChecks.Shared.Messaging;
 using Microsoft.AspNetCore.Http;
 
-namespace AzDO.PipelineChecks.Shared.Payloads
-{
-    public class RequestPayload
+namespace AzDO.PipelineChecks.Shared.ValidationDto
+{  
+    public class ValidationArguments
     {
         public Guid ProjectId { get; }
         public string? HubName { get; }
@@ -54,22 +55,7 @@ namespace AzDO.PipelineChecks.Shared.Payloads
             CheckStageAttemptKey
         };
 
-        public RequestPayload() 
-        {
-            ProjectId = Guid.Empty;
-            HubName = string.Empty;
-            PlanId = Guid.Empty;
-            PlanUri = new Uri("https://microsoft.com");
-            JobId = Guid.Empty;
-            TimelineId = Guid.Empty;
-            TaskInstanceId = Guid.Empty;
-            TaskInstanceName = string.Empty;
-            AuthToken = string.Empty;
-            RequestType = RequestType.Execute;
-            MessageProperties = [];
-        }
-
-        public RequestPayload(
+        public ValidationArguments(
             Guid projectId, string? hubName,
             Guid planId, Uri planUri, Guid jobId, Guid timelineId, Guid taskInstanceId,
             string? taskInstanceName, string? authToken, RequestType requestType,
@@ -89,7 +75,7 @@ namespace AzDO.PipelineChecks.Shared.Payloads
             this.validHubNameList = validHubNameList;
         }
 
-        public RequestPayload(Dictionary<string, string> rawProperties)
+        public ValidationArguments(Dictionary<string, string> rawProperties)
         {
             Dictionary<string, string> lowerCaseKeyMessageProperties = [];
             foreach (var messageProperty in rawProperties)
@@ -208,7 +194,7 @@ namespace AzDO.PipelineChecks.Shared.Payloads
 
 
 
-        public static RequestPayload ReadFromRequestHeader(IHeaderDictionary requestHeaders)
+        public static ValidationArguments ReadFromRequestHeader(IHeaderDictionary requestHeaders)
         {
             Dictionary<string, string> properties = [];
 
@@ -223,8 +209,23 @@ namespace AzDO.PipelineChecks.Shared.Payloads
                     }
                 }
             }
-            return new RequestPayload(properties);
+            return new ValidationArguments(properties);
         }
+
+        public static ValidationArguments ReadFromRequestHeader(HttpHeaderCollection requestHeaders)
+        {
+            Dictionary<string, string> properties = [];
+
+            if(requestHeaders.Headers != null)
+            {
+                foreach (var requestHeader in requestHeaders.Headers)
+                {
+                    properties.Add(requestHeader.Key, requestHeader.Value);
+                }
+            }
+            return new ValidationArguments(properties);
+        }
+
     }
 
     public enum RequestType

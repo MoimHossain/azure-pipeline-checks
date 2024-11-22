@@ -1,6 +1,6 @@
 ﻿
 
-using AzDO.PipelineChecks.Shared.Payloads;
+using AzDO.PipelineChecks.Shared.ValidationDto;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -9,14 +9,14 @@ namespace AzDO.PipelineChecks.Shared.Utils
 {
     public class TaskClient : IDisposable
     {
-        private readonly RequestPayload taskProperties;
+        private readonly ValidationArguments taskProperties;
         private TaskHttpClient taskClient;
         private VssConnection vssConnection;
         private int? PlanVersion;
 
-        public RequestPayload Payload => taskProperties;
+        public ValidationArguments Payload => taskProperties;
 
-        public TaskClient(RequestPayload payload)
+        public TaskClient(ValidationArguments payload)
         {
             this.taskProperties = payload;
             var vssBasicCredential = new VssBasicCredential(string.Empty, payload.AuthToken);

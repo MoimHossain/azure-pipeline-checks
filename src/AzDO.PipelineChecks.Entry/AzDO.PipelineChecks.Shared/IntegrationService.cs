@@ -14,7 +14,7 @@ namespace AzDO.PipelineChecks.Shared
             await daprClient.PublishEventAsync(
                 Constants.DaprComponents.PubSubEntry, 
                 Constants.DaprComponents.Topic, 
-                payload);
+                payload, cancellationToken);
         }
     }
 }

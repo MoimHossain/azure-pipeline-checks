@@ -18,7 +18,7 @@ app.UseHttpsRedirection();
 var apiGroup = app.MapGroup("api");
 
 
-apiGroup.MapPost("/process", LisenerEndpoint.Handler)
+apiGroup.MapPost("/validate", ValidationEndpoint.Handler)
     .WithName("Process Pipeline Validation")
     .WithDisplayName("Process Pipeline Validation")
     .WithOpenApi();
