@@ -19,7 +19,10 @@ namespace AzDO.PipelineChecks.Shared
                 payload, cancellationToken);
         }
 
-        public async Task PublishValidationCompletedEventAsync(CheckKind checkKind, ValidationResult validationResult, CancellationToken cancellationToken)
+        public async Task PublishValidationCompletedEventAsync(
+            CheckKind checkKind, ValidationResult validationResult, 
+            HttpHeaderCollection httpHeaderCollection,
+            CancellationToken cancellationToken)
         {
             logger.LogInformation("Publishing ValidationCompleted event {BuildId}", validationResult.BuildId);
 
@@ -42,7 +45,7 @@ namespace AzDO.PipelineChecks.Shared
             await daprClient.PublishEventAsync(
                 Constants.Dapr.PubSub_ValidationOutcome,
                 Constants.Dapr.Topic_RequestEvaluated,
-                completedEvent, cancellationToken);
+                new OutcomePackageDto(httpHeaderCollection, completedEvent), cancellationToken);
         }
     }
 }

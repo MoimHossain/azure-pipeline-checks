@@ -28,7 +28,10 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
                 var validationResult = await stateStoreService.GetWorkItemValidationResultAsync(validationArguments, cancellationToken);
                 if (validationResult == null)
                 {
-                    // TODO - Implement validation logic here
+                    // TODO - Implement validation logic here                    
+                    // Delay randomly between 1 and 5 seconds
+                    var delay = new Random().Next(1, 5);
+                    await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken);
 
                     validationResult = WorkItemValidationResult.CreateFrom(validationArguments, isValid: true);
 
@@ -41,7 +44,7 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
                     await pipelineService.ReportTaskProgressAsync("Work item validation (skipping)", envelope.Data, cancellationToken);
                 }
 
-                await integrationService.PublishValidationCompletedEventAsync(CheckKind.WorkItem, validationResult, cancellationToken);
+                await integrationService.PublishValidationCompletedEventAsync(CheckKind.WorkItem, validationResult, envelope.Data, cancellationToken);
             }
             else
             {

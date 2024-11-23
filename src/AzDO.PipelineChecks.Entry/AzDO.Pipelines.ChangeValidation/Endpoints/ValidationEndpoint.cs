@@ -29,6 +29,10 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
                 if (validationResult == null)
                 {
                     // TODO - Implement validation logic here
+                    // Delay randomly between 1 and 5 seconds
+                    var delay = new Random().Next(1, 5);
+                    await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken);
+
 
                     validationResult = ChangeValidationResult.CreateFrom(validationArguments, isValid: true);
 
@@ -41,7 +45,7 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
                     await pipelineService.ReportTaskProgressAsync("Change validation (skipping)", envelope.Data, cancellationToken);
                 }
 
-                await integrationService.PublishValidationCompletedEventAsync( CheckKind.Change, validationResult, cancellationToken);
+                await integrationService.PublishValidationCompletedEventAsync(CheckKind.Change, validationResult, envelope.Data, cancellationToken);
             }
             else
             {
