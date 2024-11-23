@@ -398,3 +398,6 @@ FodyWeavers.xsd
 *.sln.iml
 **/launchSettings.json
 launchSettings.json
+/src/AzDO.PipelineChecks.Entry/AzDO.PipelineChecks.Entry/Properties/launchSettings.json
+/src/AzDO.PipelineChecks.Entry/AzDO.Pipelines.ChangeValidation/Properties/launchSettings.json
+/src/AzDO.PipelineChecks.Entry/AzDO.Pipelines.WorkItemValidation/Properties/launchSettings.json
