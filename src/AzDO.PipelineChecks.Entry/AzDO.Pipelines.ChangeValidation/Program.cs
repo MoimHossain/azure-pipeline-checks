@@ -5,18 +5,9 @@ using AzDO.Pipelines.ChangeValidation.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-await builder.Services.RegisterSharedServicesAsync(builder.Configuration);
-
-var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseCors();
-app.UseRouting();
-app.UseHttpsRedirection();
+var app = await builder.BuidAndConfigureAppAsync(Constants.MicroServices.ChangeValidation);
 
 var apiGroup = app.MapGroup("api");
-
 
 apiGroup.MapPost("/validate", ValidationEndpoint.Handler)
     .WithName("Process Pipeline Validation")
@@ -28,6 +19,5 @@ var endpoint = new DaprSubscriptionEndpoint(Constants.Dapr.Sub.Change, Constants
 daprApiGroup.MapGet("/subscribe", endpoint.Handler)
     .WithName("Dapr Subscribe")
     .WithDisplayName("Dapr Subscribe").WithOpenApi();
-
 
 app.Run();

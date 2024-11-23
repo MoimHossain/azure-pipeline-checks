@@ -6,15 +6,7 @@ using AzDO.Pipelines.WorkItemValidation.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-await builder.Services.RegisterSharedServicesAsync(builder.Configuration);
-
-var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseCors();
-app.UseRouting();
-app.UseHttpsRedirection();
+var app = await builder.BuidAndConfigureAppAsync(Constants.MicroServices.WorkItemValidation);
 
 var apiGroup = app.MapGroup("api");
 

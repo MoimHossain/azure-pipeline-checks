@@ -25,5 +25,12 @@ namespace AzDO.PipelineChecks.Shared
                 public const string CheckOutcomes = "azdo.pipeline.check.outcomestore";
             }
         }
+
+        public class MicroServices
+        {
+            public const string WorkItemValidation = "workitem-validation";
+            public const string ChangeValidation = "change-validation";
+            public const string Entry = "check-entry";
+        }
     }
 }

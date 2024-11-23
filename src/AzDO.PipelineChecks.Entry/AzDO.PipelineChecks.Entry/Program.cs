@@ -6,15 +6,7 @@ using AzDO.PipelineChecks.Shared.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
-await builder.Services.RegisterSharedServicesAsync(builder.Configuration);
-
-var app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-app.UseCors();
-app.UseRouting();
-app.UseHttpsRedirection();
+var app = await builder.BuidAndConfigureAppAsync(Constants.MicroServices.Entry);
 
 var apiGroup = app.MapGroup("api");
 apiGroup.MapPost("/begin-validation", CheckEntryEndpoint.Handler)
