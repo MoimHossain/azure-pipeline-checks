@@ -50,7 +50,7 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             ValidationArguments validationArguments,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("Saving (overwrite) work item validation result: {BuildId}", workItemValidationResult.BuildId);
+            logger.LogInformation("Saving (overwrite) work item validation result: {BuildId}, Validation Passed = {isValid}", workItemValidationResult.BuildId, workItemValidationResult.IsValid);
 
             var rowKey = workItemValidationResult.GetRowKey();
 
@@ -88,7 +88,7 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             ValidationArguments validationArguments,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("Saving (overwrite) Change validation result: {BuildId}", changeValidationResult.BuildId);
+            logger.LogInformation("Saving (overwrite) Change validation result: {BuildId}, Validation Passed = {isValid}", changeValidationResult.BuildId, changeValidationResult.IsValid);
 
             var rowKey = changeValidationResult.GetRowKey();
 

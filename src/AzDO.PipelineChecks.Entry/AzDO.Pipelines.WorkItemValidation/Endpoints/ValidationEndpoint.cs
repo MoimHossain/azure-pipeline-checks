@@ -28,20 +28,21 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
                 var validationResult = await stateStoreService.GetWorkItemValidationResultAsync(validationArguments, cancellationToken);
                 if (validationResult == null)
                 {
-                    // TODO - Implement validation logic here                    
-                    // Delay randomly between 1 and 5 seconds
-                    var delay = new Random().Next(1, 5);
+                    // TODO - Implement validation logic here                                        
+                    var delay = new Random().Next(3, 5);
                     await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken);
 
                     validationResult = WorkItemValidationResult.CreateFrom(validationArguments, isValid: true);
+                    var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
 
                     await stateStoreService.SaveWorkItemValidationResultAsync(validationResult, validationArguments, cancellationToken);
-                    await pipelineService.ReportTaskProgressAsync("Work item validation completed", envelope.Data, cancellationToken);
+                    await pipelineService.ReportTaskProgressAsync($"Work item validation completed ({validationResultInString})", envelope.Data, cancellationToken);
                 }
                 else
                 {
-                    logger.LogInformation("Validation result already exists for {BuildId}", validationArguments.BuildId);
-                    await pipelineService.ReportTaskProgressAsync("Work item validation (skipping)", envelope.Data, cancellationToken);
+                    var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
+                    logger.LogInformation("Validation result already exists for {BuildId} {Result}", validationArguments.BuildId, validationResultInString);
+                    await pipelineService.ReportTaskProgressAsync($"WorkItem validation ({validationResultInString}) computed before. (Skipping)", envelope.Data, cancellationToken);
                 }
 
                 await integrationService.PublishValidationCompletedEventAsync(CheckKind.WorkItem, validationResult, envelope.Data, cancellationToken);

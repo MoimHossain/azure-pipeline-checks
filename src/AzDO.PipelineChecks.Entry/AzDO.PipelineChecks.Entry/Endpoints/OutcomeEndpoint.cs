@@ -23,7 +23,8 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 var httpHeaders = envelope.Data.HttpHeaderCollection;
                 var outcomeEvent = envelope.Data.Event;
 
-                logger.LogInformation("Received outcome response: {changeKind}", outcomeEvent.CheckKind.ToString());
+                var validationResultInString = outcomeEvent.IsValid ? "PASSED" : "FAILED";
+                logger.LogInformation("Received outcome response: {changeKind} {Result}", outcomeEvent.CheckKind.ToString(), validationResultInString);
 
                 outcomeDto = await stateStoreService.GetOutcomeAsync(outcomeEvent.DefinitionId, outcomeEvent.BuildId, cancellationToken);
 

@@ -28,21 +28,21 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
                 var validationResult = await stateStoreService.GetChangeValidationResultAsync(validationArguments, cancellationToken);
                 if (validationResult == null)
                 {
-                    // TODO - Implement validation logic here
-                    // Delay randomly between 1 and 5 seconds
-                    var delay = new Random().Next(1, 5);
+                    // TODO - Implement validation logic here                    
+                    var delay = new Random().Next(3, 5);
                     await Task.Delay(TimeSpan.FromSeconds(delay), cancellationToken);
 
-
                     validationResult = ChangeValidationResult.CreateFrom(validationArguments, isValid: true);
+                    var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
 
                     await stateStoreService.SaveChangeValidationResultAsync(validationResult, validationArguments, cancellationToken);
-                    await pipelineService.ReportTaskProgressAsync("Change validation completed", envelope.Data, cancellationToken);
+                    await pipelineService.ReportTaskProgressAsync($"Change validation completed ({validationResultInString})", envelope.Data, cancellationToken);                    
                 }
                 else
                 {
-                    logger.LogInformation("Validation result already exists for {BuildId}", validationArguments.BuildId);
-                    await pipelineService.ReportTaskProgressAsync("Change validation (skipping)", envelope.Data, cancellationToken);
+                    var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
+                    logger.LogInformation("Validation result already exists for {BuildId} {Result}", validationArguments.BuildId, validationResultInString);
+                    await pipelineService.ReportTaskProgressAsync($"Change validation ({validationResultInString}) computed before. (skipping)", envelope.Data, cancellationToken);                    
                 }
 
                 await integrationService.PublishValidationCompletedEventAsync(CheckKind.Change, validationResult, envelope.Data, cancellationToken);

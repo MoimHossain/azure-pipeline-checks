@@ -37,6 +37,7 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
                 cancellationToken,
                 async (taskLogger, taskClient, taskProperties) =>
                 {
+                    await taskLogger.CreateTaskTimelineRecordIfRequired(taskClient, cancellationToken).ConfigureAwait(false);
                     await taskLogger.LogImmediately(message);
                     await taskClient.ReportTaskProgress(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);
                 });
@@ -48,7 +49,7 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
             HttpHeaderCollection httpHeaderCollection,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("Reporting Azure DevOps that task is progressing..{message}", message);
+            logger.LogInformation("Reporting Azure DevOps that task is completed..{message}", message);
 
             await ExecuteInContextAsync(
                 httpHeaderCollection,
@@ -57,6 +58,7 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
                 {
                     var taskResult = isSucceeded ? TaskResult.Succeeded : TaskResult.Failed;
 
+                    await taskLogger.CreateTaskTimelineRecordIfRequired(taskClient, cancellationToken).ConfigureAwait(false);
                     await taskLogger.LogImmediately(message);
                     await taskClient.ReportTaskCompleted(taskProperties.TaskInstanceId, taskResult, cancellationToken).ConfigureAwait(false);
                 });
@@ -71,8 +73,6 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
             CancellationToken cancellationToken,
             Func<TaskLogService, TaskClient, ValidationArguments, Task> excuteCode)
         {
-            logger.LogInformation("Reporting Azure DevOps that task has been started..");
-
             TaskLogService? taskLogger = null;
             try
             {
