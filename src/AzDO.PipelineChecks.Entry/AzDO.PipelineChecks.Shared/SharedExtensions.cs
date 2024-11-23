@@ -23,7 +23,10 @@ namespace AzDO.PipelineChecks.Shared
                 services.AddHttpClient();
                 services.AddSwaggerGen();
 
-
+                services.AddApplicationInsightsTelemetry(aiOption => 
+                {
+                    aiOption.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString;
+                });
 
                 services.AddCors(options =>
                 {
@@ -39,6 +42,7 @@ namespace AzDO.PipelineChecks.Shared
                 {
                     logging.AddConfiguration(configurationManager.GetSection("Logging"));
                     logging.AddConsole();
+                    logging.AddApplicationInsights();
                     logging.AddDebug();
                 });
                 services.AddSingleton(services =>
