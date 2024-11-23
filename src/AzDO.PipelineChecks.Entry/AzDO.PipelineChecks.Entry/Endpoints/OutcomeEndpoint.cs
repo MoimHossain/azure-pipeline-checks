@@ -52,11 +52,14 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 
                 var allMandatoryChecksPerformed = (mandatoryChecks.All(x => outcomeDto.CheckOutcomes.Any(y => y.CheckKind == x)));
                 var allChecksValid = outcomeDto.CheckOutcomes.All(x => x.IsValid);
+                var validationArgs = ValidationArguments.ReadFromRequestHeader(httpHeaders);
+                var notifiedCompletion = await stateStoreService.GetNotificationSentFlagAsync(validationArgs, cancellationToken);
 
-                if(allMandatoryChecksPerformed)
+                if (!notifiedCompletion && allMandatoryChecksPerformed)
                 {
                     var message = allChecksValid ? "All checks completed successfully" : "Some (or all) checks failed";
                     await pipelineService.ReportTaskCompletedAsync(message, allChecksValid, httpHeaders, cancellationToken);
+                    await stateStoreService.SetNotificationSentFlagAsync(validationArgs, cancellationToken);
                 }
             }
             else
