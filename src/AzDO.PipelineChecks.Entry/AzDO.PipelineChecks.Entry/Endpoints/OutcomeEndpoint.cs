@@ -18,8 +18,6 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
         {
             OutcomeDto? outcomeDto;
 
-            logger.LogInformation("Received outcome request: ");
-
             if (envelope != null && envelope.Data != null && envelope.Data.HttpHeaderCollection != null && envelope.Data.Event != null)
             {
                 var httpHeaders = envelope.Data.HttpHeaderCollection;

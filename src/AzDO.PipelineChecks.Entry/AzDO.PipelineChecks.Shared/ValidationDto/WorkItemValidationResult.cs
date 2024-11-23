@@ -11,7 +11,7 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
         {
             var validationResult = new WorkItemValidationResult
             {
-                IsValid = false,
+                IsValid = isValid,
                 CreationTime = DateTime.UtcNow,
                 ProjectId = validationArguments.ProjectId,
                 BuildId = validationArguments.BuildId,

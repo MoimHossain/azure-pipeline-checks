@@ -20,14 +20,14 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
                 async (taskLogger, taskClient, taskProperties) =>
             {
                 await taskLogger.CreateTaskTimelineRecordIfRequired(taskClient, cancellationToken).ConfigureAwait(false);
-                await taskLogger.LogImmediately("Task started");
+                await taskLogger.LogImmediately("The validation workflow has started...please wait.");
                 await taskClient.ReportTaskStarted(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);
             });
         }
 
         public async Task ReportTaskProgressAsync(
             string message,
-            HttpHeaderCollection httpHeaderCollection, 
+            HttpHeaderCollection httpHeaderCollection,
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Reporting Azure DevOps that task is progressing..{message}", message);
@@ -38,7 +38,7 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
                 async (taskLogger, taskClient, taskProperties) =>
                 {
                     await taskLogger.LogImmediately(message);
-                    await taskClient.ReportTaskProgress(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);                    
+                    await taskClient.ReportTaskProgress(taskProperties.TaskInstanceId, cancellationToken).ConfigureAwait(false);
                 });
         }
 
@@ -84,7 +84,7 @@ namespace AzDO.PipelineChecks.Shared.PipelineServices
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error while reporting task started");
+                logger.LogError(e, "Error while Communicating to Azure DevOps");
             }
             finally
             {
