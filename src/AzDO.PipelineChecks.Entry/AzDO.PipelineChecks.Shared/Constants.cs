@@ -23,6 +23,7 @@ namespace AzDO.PipelineChecks.Shared
                 public const string WorkItemValidations = "azdo.pipeline.workitem.validations";
                 public const string ChangeValidations = "azdo.pipeline.change.validations";
                 public const string CheckOutcomes = "azdo.pipeline.check.outcomestore";
+                public const string Leases = "azdo.pipeline.check.leasestore";
             }
         }
 

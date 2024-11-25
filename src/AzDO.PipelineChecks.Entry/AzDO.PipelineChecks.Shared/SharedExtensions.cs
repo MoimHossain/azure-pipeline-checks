@@ -109,6 +109,7 @@ namespace AzDO.PipelineChecks.Shared
             services.AddSingleton<HttpHeaderTraceClient>();
             services.AddSingleton<IntegrationService>();
             services.AddSingleton<StateStoreService>();
+            services.AddSingleton<ConcurrentLeaseStore>();
             services.AddSingleton<PipelineService>();
             await Task.CompletedTask;
         }
