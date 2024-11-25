@@ -27,13 +27,19 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
                 var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
 
                 await stateStoreService.SaveWorkItemValidationResultAsync(validationResult, validationArguments, cancellationToken);
-                await pipelineService.ReportTaskProgressAsync($"Work item validation completed ({validationResultInString})", headers, cancellationToken);
+                await pipelineService.ReportTaskProgressAsync($"Work item validation completed ({validationResultInString}) JOBID: ({validationArguments.JobId})", headers, cancellationToken);
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### PROCESSED WORKITEM validation : {JobId}", validationArguments.JobId);
             }
             else
             {
                 var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
-                logger.LogInformation("Validation result already exists for {BuildId} {Result}", validationArguments.BuildId, validationResultInString);
-                await pipelineService.ReportTaskProgressAsync($"WorkItem validation ({validationResultInString}) computed before. (Skipping)", headers, cancellationToken);
+                logger.LogInformation("Validation result already exists for {BuildId} {Result} {JobId}", validationArguments.BuildId, validationResultInString, validationArguments.JobId);
+                await pipelineService.ReportTaskProgressAsync($"WorkItem validation ({validationResultInString}) JOBID: ({validationArguments.JobId}) computed before. (Skipping)", headers, cancellationToken);
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### SKIPPED WORKITEM Evaluation : {JobId}", validationArguments.JobId);
             }
 
             await integrationService.PublishValidationCompletedEventAsync(CheckKind.WorkItem, validationResult, headers, cancellationToken);
@@ -54,9 +60,16 @@ namespace AzDO.Pipelines.WorkItemValidation.Endpoints
 
                 var validationArguments = ValidationArguments.ReadFromRequestHeader(envelope.Data);
 
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### Going to Acquire Lease for : {JobId}", validationArguments.JobId);
+
                 var leaseName = $"WorkItem-{validationArguments.BuildId}";
                 
                 using var lease = await concurrentLeaseStore.AquireLeaseAsync(leaseName, TimeSpan.FromSeconds(60), cancellationToken);
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### Acquire Lease for : {JobId} was {result}", validationArguments.JobId, lease.Aquired ? "LEASE_SUCCESS" : "LEASE_FAILURE");
+
 
                 await ProcessValidateCoreAsync(envelope.Data, logger, integrationService, stateStoreService, pipelineService, validationArguments, cancellationToken);
             }

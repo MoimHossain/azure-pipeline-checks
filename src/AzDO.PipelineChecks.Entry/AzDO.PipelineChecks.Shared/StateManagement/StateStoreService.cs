@@ -119,43 +119,5 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             }
             return result;
         }
-
-
-        public async Task SetNotificationSentFlagAsync(            
-            ValidationArguments validationArguments,
-            CancellationToken cancellationToken)
-        {
-            logger.LogInformation("Setting notification sent flag for Build Id {BuildId} & Plant Id {PlanId}", validationArguments.BuildId, validationArguments.PlanId);
-
-            var rowKey = $"{validationArguments.BuildId}-{validationArguments.PlanId}";
-
-            await daprClient.SaveStateAsync(
-                Constants.Dapr.State.CheckOutcomes,
-                rowKey,
-                new NotificationFlagDto { Notified = true },
-                new StateOptions { Consistency = ConsistencyMode.Strong },
-                cancellationToken: cancellationToken);
-        }
-
-        public async Task<bool> GetNotificationSentFlagAsync(
-                ValidationArguments validationArguments, CancellationToken cancellationToken)
-        {   
-            try
-            {
-                logger.LogInformation("Getting notification sent flag for Build Id {BuildId} & Plant Id {PlanId}", validationArguments.BuildId, validationArguments.PlanId);
-
-                var rowKey = $"{validationArguments.BuildId}-{validationArguments.PlanId}";
-                var dto = await daprClient.GetStateAsync<NotificationFlagDto>(
-                                Constants.Dapr.State.CheckOutcomes,
-                                rowKey,
-                                cancellationToken: cancellationToken);
-                return dto != null;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error while getting Change validation result");
-            }
-            return false;
-        }
     }
 }

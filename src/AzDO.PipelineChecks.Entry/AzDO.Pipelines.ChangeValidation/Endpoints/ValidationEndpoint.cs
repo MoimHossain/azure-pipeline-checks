@@ -1,5 +1,4 @@
 ﻿
-
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
 using AzDO.PipelineChecks.Shared.PipelineServices;
@@ -26,13 +25,21 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
                 var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
 
                 await stateStoreService.SaveChangeValidationResultAsync(validationResult, validationArguments, cancellationToken);
-                await pipelineService.ReportTaskProgressAsync($"Change validation completed ({validationResultInString})", headers, cancellationToken);
+                await pipelineService.ReportTaskProgressAsync($"Change validation completed ({validationResultInString}) JOBID: ({validationArguments.JobId})", headers, cancellationToken);
+
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### PROCESSED CHANGE validation : {JobId}", validationArguments.JobId);
+
             }
             else
             {
                 var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
-                logger.LogInformation("Validation result already exists for {BuildId} {Result}", validationArguments.BuildId, validationResultInString);
-                await pipelineService.ReportTaskProgressAsync($"Change validation ({validationResultInString}) computed before. (skipping)", headers, cancellationToken);
+                logger.LogInformation("Validation result already exists for {BuildId} {Result} {JobId}", validationArguments.BuildId, validationResultInString, validationArguments.JobId);
+                await pipelineService.ReportTaskProgressAsync($"Change validation ({validationResultInString}) JOBID: ({validationArguments.JobId}) computed before. (skipping)", headers, cancellationToken);
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### SKIPPED WORKITEM Evaluation : {JobId}", validationArguments.JobId);
             }
 
             await integrationService.PublishValidationCompletedEventAsync(CheckKind.Change, validationResult, headers, cancellationToken);
@@ -53,9 +60,17 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
 
                 var validationArguments = ValidationArguments.ReadFromRequestHeader(envelope.Data);
 
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### Going to Acquire Lease for : {JobId}", validationArguments.JobId);
+
                 var leaseName = $"ChangeValidation-{validationArguments.BuildId}";
 
                 using var lease = await concurrentLeaseStore.AquireLeaseAsync(leaseName, TimeSpan.FromSeconds(60), cancellationToken);
+
+
+                // ### Instrumentation for JOB ID                
+                logger.LogInformation("#### Acquire Lease for : {JobId} was {result}", validationArguments.JobId, lease.Aquired ? "LEASE_SUCCESS" : "LEASE_FAILURE");
+
 
                 await ProcessValidationCoreAsync(envelope.Data, logger, integrationService, stateStoreService,
                     pipelineService, validationArguments, cancellationToken);

@@ -13,22 +13,19 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             int pollingDelayInMilliseconds = 1000) 
         {
             var leaseKey = $"leases-{leaseName}";
-            var lease = new Lease { LeaseName = leaseName, LeaseOwner = Environment.MachineName };
-            var leaseOptions = new StateOptions { Consistency = ConsistencyMode.Strong };
+            var lease = new Lease { LeaseName = leaseName, LeaseOwner = Environment.MachineName };            
             var leaseAcquired = false;
             var startTime = DateTime.UtcNow;
             while (!leaseAcquired && DateTime.UtcNow - startTime < timeOut)
             {
                 try
                 {
-                    await daprClient.SaveStateAsync(Constants.Dapr.State.Leases, leaseKey, lease, leaseOptions, 
-                        cancellationToken: cancellationToken);                    
-
+                    await daprClient.TrySaveStateAsync<Lease>(Constants.Dapr.State.Leases, leaseKey, lease, etag: leaseKey);
                     leaseAcquired = true;
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWarning(ex, "Failed to acquire lease {LeaseName}", leaseName);
+                    logger.LogWarning(ex, "Failed to acquire lease {LeaseName} - will retry if timeout has not occured.", leaseName);
                     await Task.Delay(pollingDelayInMilliseconds);
                 }
             }
@@ -37,19 +34,20 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             if (!leaseAcquired)
             {
                 logger.LogError("Failed to acquire lease {LeaseName} within {TimeOut}", leaseName, timeOut);
-                throw new TimeoutException($"Failed to acquire lease {leaseName} within {timeOut}");
             }
 
 
             logger.LogInformation("Lease {LeaseName} acquired", leaseName);
-            return new InternalDisposableForLeaseManagement(this, leaseName);
+            return new InternalDisposableForLeaseManagement(this, leaseName, leaseKey, leaseAcquired);
         }
 
-        public async Task ReleaseLeaseAsync(string leaseName)
+        private async Task ReleaseLeaseAsync(string leaseName, string leaseKey, bool acquired)
         {
-            var leaseKey = $"leases-{leaseName}";
-            await daprClient.DeleteStateAsync(Constants.Dapr.State.Leases, leaseKey).ConfigureAwait(false);
-            logger.LogInformation("Lease {LeaseName} released", leaseName);
+            if(acquired)
+            {
+                await daprClient.DeleteStateAsync(Constants.Dapr.State.Leases, leaseKey).ConfigureAwait(false);
+                logger.LogInformation("Lease {LeaseName} released", leaseName);
+            }
         }
 
 
@@ -57,15 +55,24 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
         {
             private readonly ConcurrentLeaseStore _leaseStore;
             private readonly string _leaseName;
-            public InternalDisposableForLeaseManagement(ConcurrentLeaseStore leaseStore, string leaseName)
+            private readonly string _leaseKey;
+            private readonly bool _aquired;
+
+            public InternalDisposableForLeaseManagement(
+                ConcurrentLeaseStore leaseStore, string leaseName, 
+                string leaseKey, bool aquired)
             {
                 _leaseStore = leaseStore;
                 _leaseName = leaseName;
+                _leaseKey = leaseKey;
+                _aquired = aquired;
             }
             public void Dispose()
             {                
-                _leaseStore.ReleaseLeaseAsync(_leaseName).Wait();
+                _leaseStore.ReleaseLeaseAsync(_leaseName, _leaseKey, _aquired).Wait();
             }
+
+            public bool Aquired => _aquired;
         }
 
     }
@@ -81,4 +88,3 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
 }
 
 
-//var succes = await daprClient.TrySaveStateAsync<CustomState>(stateStoreName, "key", payload, "MOIMHOSSAINX");
