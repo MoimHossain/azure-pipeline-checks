@@ -11,9 +11,29 @@ const string partitionKey = "check-entry";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton(services =>
+{
+    var jsonSerializerOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true,
+        AllowTrailingCommas = true,
+        PropertyNameCaseInsensitive = true
+    };
+    jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    return jsonSerializerOptions;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddSingleton<TableClient>((serviceProvider) =>
 {
@@ -78,9 +98,9 @@ public class BuildInfo
     [JsonPropertyName("jobId")]
     public string? JobId { get; set; }
 
-    [JsonPropertyName("checkKind")]
+    [JsonPropertyName("CheckKind")]
     public string? CheckKind { get; set; }
 
-    [JsonPropertyName("checkStatus")]
+    [JsonPropertyName("CheckStatus")]
     public string? CheckStatus { get; set; }
 }
