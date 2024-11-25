@@ -1,0 +1,6 @@
+@AzDO.Pipelines.Checks.Dashboard_HostAddress = http://localhost:5024
+
+GET {{AzDO.Pipelines.Checks.Dashboard_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
