@@ -35,6 +35,7 @@ namespace AzDO.Pipelines.ChangeValidation.Endpoints
             else
             {
                 var validationResultInString = validationResult.IsValid ? "PASSED" : "FAILED";
+                validationResult.CheckComputation = CheckResultCompuationKind.Skipped;
                 logger.LogInformation("Validation result already exists for {BuildId} {Result} {JobId}", validationArguments.BuildId, validationResultInString, validationArguments.JobId);
                 await pipelineService.ReportTaskProgressAsync($"Change validation ({validationResultInString}) JOBID: ({validationArguments.JobId}) computed before. (skipping)", headers, cancellationToken);
 

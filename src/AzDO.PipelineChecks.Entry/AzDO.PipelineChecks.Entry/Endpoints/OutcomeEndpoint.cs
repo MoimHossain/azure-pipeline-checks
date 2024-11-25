@@ -13,6 +13,7 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
             [FromBody] Envelope<OutcomePackageDto> envelope,
             [FromServices] StateStoreService stateStoreService,
             [FromServices] PipelineService pipelineService,
+            [FromServices] VisualizationStore visualizationStore,
             ILogger<OutcomeEndpoint> logger,
             CancellationToken cancellationToken)
         {
@@ -24,7 +25,10 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 var outcomeEvent = envelope.Data.Event;
 
                 var validationResultInString = outcomeEvent.IsValid ? "PASSED" : "FAILED";
-                logger.LogInformation("Received outcome response: {changeKind} {Result}", outcomeEvent.CheckKind.ToString(), validationResultInString);
+                logger.LogInformation("Received outcome response: {changeKind} {Result} {StageName} {JobId} {CheckKind} {ComputeKind}", 
+                    outcomeEvent.CheckKind.ToString(), validationResultInString, outcomeEvent.StageName, outcomeEvent.JobId, outcomeEvent.CheckKind.ToString(), outcomeEvent.CheckComputation.ToString());
+                await visualizationStore.RecordAsync(outcomeEvent.BuildId, outcomeEvent.StageId,
+                    outcomeEvent.JobId, outcomeEvent.CheckKind, outcomeEvent.CheckComputation, cancellationToken);
 
                 outcomeDto = await stateStoreService.GetOutcomeAsync(outcomeEvent.DefinitionId, outcomeEvent.BuildId, cancellationToken);
 
@@ -47,6 +51,8 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                     Errors = outcomeEvent.Errors
                 });
                 await stateStoreService.SaveOutcomeAsync(outcomeDto, cancellationToken);
+
+
 
                 List<CheckKind> mandatoryChecks = [CheckKind.WorkItem, CheckKind.Change];
                 

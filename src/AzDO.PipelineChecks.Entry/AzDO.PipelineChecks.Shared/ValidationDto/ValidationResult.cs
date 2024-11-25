@@ -6,6 +6,9 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
 {
     public abstract class ValidationResult
     {
+        [JsonPropertyName("checkComputation")]
+        public CheckResultCompuationKind CheckComputation { get; set; }
+
         [JsonPropertyName("creationTime")]
         public DateTime CreationTime { get; set; } = DateTime.Now;
 
@@ -39,5 +42,34 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
 
         [JsonPropertyName("checkStageId")]
         public Guid CheckStageId { get; set; }
+
+        [JsonPropertyName("timelineId")]
+        public Guid TimelineId { get; set; }
+        [JsonPropertyName("taskInstanceId")]
+        public Guid TaskInstanceId { get; set; }
+        [JsonPropertyName("taskInstanceName")]
+        public string? TaskInstanceName { get; set; }
+
+    }
+
+    public static class ValidationResultExtensions
+    {
+        public static void CopyFrom(this ValidationResult? validationResult, ValidationArguments validationArguments)
+        {
+            if (validationResult != null && validationArguments != null) 
+            {
+                validationResult.BuildId = validationArguments.BuildId;
+                validationResult.JobId = validationArguments.JobId;
+                validationResult.StageId = validationArguments.StageId;
+                validationResult.PlanId = validationArguments.PlanId;
+                validationResult.CheckStageId = validationArguments.CheckStageId;
+                validationResult.ProjectId = validationArguments.ProjectId;
+                validationResult.StageName = validationArguments.StageName;
+                validationResult.DefinitionId = validationArguments.DefinitionId;
+                validationResult.TimelineId = validationArguments.TimelineId;
+                validationResult.TaskInstanceId = validationArguments.TaskInstanceId;
+                validationResult.TaskInstanceName = validationArguments.TaskInstanceName;
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
 {
     public class WorkItemValidationResult : ValidationResult
     {
-        public string GetRowKey() => $"{this.DefinitionId}-{this.BuildId}";
+        public string GetRowKey() => $"{this.BuildId}";
 
         public static WorkItemValidationResult CreateFrom(
             ValidationArguments validationArguments, bool isValid = false)
@@ -12,6 +12,7 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
             var validationResult = new WorkItemValidationResult
             {
                 IsValid = isValid,
+                CheckComputation = CheckResultCompuationKind.Computed,
                 CreationTime = DateTime.UtcNow,
                 ProjectId = validationArguments.ProjectId,
                 BuildId = validationArguments.BuildId,

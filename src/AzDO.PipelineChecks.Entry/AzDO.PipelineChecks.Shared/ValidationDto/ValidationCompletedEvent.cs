@@ -16,4 +16,11 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
         WorkItem,
         Change
     }
+
+    public enum CheckResultCompuationKind
+    {
+        Pending,
+        Computed,
+        Skipped
+    }
 }

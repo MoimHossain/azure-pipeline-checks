@@ -16,6 +16,8 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
 
         [JsonPropertyName("checkOutcomes")]
         public List<CheckOutcomeDto> CheckOutcomes { get; set; } = [];
+
+        public static string GetRowKey(int buildId) => $"{buildId}";
     }
 
     public class CheckOutcomeDto

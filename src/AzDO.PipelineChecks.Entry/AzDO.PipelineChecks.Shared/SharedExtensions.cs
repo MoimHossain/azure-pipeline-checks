@@ -110,6 +110,7 @@ namespace AzDO.PipelineChecks.Shared
             services.AddSingleton<IntegrationService>();
             services.AddSingleton<StateStoreService>();
             services.AddSingleton<ConcurrentLeaseStore>();
+            services.AddSingleton<VisualizationStore>();
             services.AddSingleton<PipelineService>();
             await Task.CompletedTask;
         }

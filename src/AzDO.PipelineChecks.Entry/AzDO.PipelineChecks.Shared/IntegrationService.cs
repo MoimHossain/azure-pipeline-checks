@@ -24,11 +24,13 @@ namespace AzDO.PipelineChecks.Shared
             HttpHeaderCollection httpHeaderCollection,
             CancellationToken cancellationToken)
         {
-            logger.LogInformation("Publishing ValidationCompleted event {BuildId} {IsValid}", validationResult.BuildId, validationResult.IsValid);
+            logger.LogInformation("Publishing ValidationCompleted event {BuildId} {JobId} {IsValid} {CheckKind} {ComputationKind} {StageName}", 
+                validationResult.BuildId, validationResult.JobId, validationResult.IsValid, checkKind.ToString(), validationResult.CheckComputation, validationResult.StageName);
 
             var completedEvent = new ValidationCompletedEvent
             {
                 CheckKind = checkKind,
+                CheckComputation = validationResult.CheckComputation,
                 IsValid = validationResult.IsValid,                
                 Errors = validationResult.Errors,
                 BuildId = validationResult.BuildId,

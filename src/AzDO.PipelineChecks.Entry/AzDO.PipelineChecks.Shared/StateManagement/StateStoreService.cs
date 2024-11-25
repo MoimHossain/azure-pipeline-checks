@@ -16,10 +16,9 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             {
                 logger.LogInformation("Getting outcome for {DefinitionId}-{BuildId}", definitionId, buildId);
 
-                var rowKey = $"{definitionId}-{buildId}";
                 outcome = await daprClient.GetStateAsync<OutcomeDto>(
                                 Constants.Dapr.State.CheckOutcomes,
-                                rowKey,
+                                OutcomeDto.GetRowKey(buildId),
                                 cancellationToken: cancellationToken);
             }
             catch (Exception ex)
@@ -35,11 +34,9 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
         {
             logger.LogInformation("Saving (overwrite) outcome for {DefinitionId}-{BuildId}", outcome.DefinitionId, outcome.BuildId);
 
-            var rowKey = $"{outcome.DefinitionId}-{outcome.BuildId}";
-
             await daprClient.SaveStateAsync(
                 Constants.Dapr.State.CheckOutcomes,
-                rowKey,
+                OutcomeDto.GetRowKey(outcome.BuildId),
                 outcome,
                 new StateOptions { Consistency = ConsistencyMode.Strong },
                 cancellationToken: cancellationToken);
@@ -79,6 +76,7 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             {
                 logger.LogError(ex, "Error while getting work item validation result");
             }
+            result.CopyFrom(validationArguments);
             return result;
         }
 
@@ -117,6 +115,7 @@ namespace AzDO.PipelineChecks.Shared.StateManagement
             {
                 logger.LogError(ex, "Error while getting Change validation result");
             }
+            result.CopyFrom(validationArguments);
             return result;
         }
     }

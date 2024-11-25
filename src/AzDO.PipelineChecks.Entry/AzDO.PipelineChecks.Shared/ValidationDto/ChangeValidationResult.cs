@@ -4,7 +4,7 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
 {
     public class ChangeValidationResult : ValidationResult
     {
-        public string GetRowKey() => $"{this.DefinitionId}-{this.BuildId}";
+        public string GetRowKey() => $"{this.BuildId}";
 
         public static ChangeValidationResult CreateFrom(
             ValidationArguments validationArguments, bool isValid = false)
@@ -13,6 +13,7 @@ namespace AzDO.PipelineChecks.Shared.ValidationDto
             {
                 IsValid = isValid,
                 CreationTime = DateTime.UtcNow,
+                CheckComputation = CheckResultCompuationKind.Computed,
                 ProjectId = validationArguments.ProjectId,
                 BuildId = validationArguments.BuildId,
                 DefinitionId = validationArguments.DefinitionId,

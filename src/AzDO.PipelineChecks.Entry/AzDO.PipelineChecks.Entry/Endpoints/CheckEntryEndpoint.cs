@@ -3,7 +3,10 @@
 using AzDO.PipelineChecks.Shared;
 using AzDO.PipelineChecks.Shared.Messaging;
 using AzDO.PipelineChecks.Shared.PipelineServices;
+using AzDO.PipelineChecks.Shared.StateManagement;
 using AzDO.PipelineChecks.Shared.Utils;
+using AzDO.PipelineChecks.Shared.ValidationDto;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AzDO.PipelineChecks.Entry.Endpoints
 {
@@ -11,10 +14,10 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
     {
         public static async Task<IResult> Handler(
             HttpContext context,
-            IntegrationService integrationService,
-            HttpHeaderTraceClient httpHeaderTraceClient,
-            PipelineService pipelineService,
-            ILogger<CheckEntryEndpoint> logger,
+            [FromServices] IntegrationService integrationService,
+            [FromServices] HttpHeaderTraceClient httpHeaderTraceClient,
+            [FromServices] PipelineService pipelineService,            
+            [FromServices] ILogger<CheckEntryEndpoint> logger,
             CancellationToken cancellationToken)
         {
             try
@@ -26,6 +29,8 @@ namespace AzDO.PipelineChecks.Entry.Endpoints
                 await integrationService.PublishCheckEntryEventAsync(payload, cancellationToken);
 
                 await pipelineService.ReportTaskBegingAsync(payload, cancellationToken);
+
+                var validationArgs = ValidationArguments.ReadFromRequestHeader(payload);
 
                 return Results.Accepted("Pipeline Check request received successfully.");
             }
