@@ -4,6 +4,7 @@ using AzDO.PipelineChecks.Shared.PipelineServices;
 using AzDO.PipelineChecks.Shared.StateManagement;
 using AzDO.PipelineChecks.Shared.Utils;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using Dapr.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -77,20 +78,36 @@ namespace AzDO.PipelineChecks.Shared
             services.AddOpenTelemetry()
                 .ConfigureResource(resBuilder => resBuilder
                     .AddService(serviceName))
-                .WithLogging(logging => logging
-                    .AddConsoleExporter())
+                .WithLogging(logging => 
+                    logging.AddConsoleExporter()
+                    .AddAzureMonitorLogExporter(azMonExportOptions => 
+                    {
+                        azMonExportOptions.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString;
+                    }))                    
                 .WithTracing(tracing => tracing
                     .AddSource(serviceName)
                     .AddAspNetCoreInstrumentation()
-                    .AddConsoleExporter())
+                    .AddConsoleExporter()
+                    .AddAzureMonitorTraceExporter(azMonExportOptions =>
+                    {
+                        azMonExportOptions.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString;
+                    }))
                 .WithMetrics(metrics => metrics
                     .AddMeter(serviceName)
-                    .AddConsoleExporter())
+                    .AddConsoleExporter()
+                    .AddAzureMonitorMetricExporter(azMonExportOptions =>
+                    {
+                        azMonExportOptions.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString;
+                    }))
                 .UseAzureMonitor(azMonitorOption => azMonitorOption.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString);
 
             builder.Logging.AddOpenTelemetry(options => options
                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName: serviceName))
-                .AddConsoleExporter());
+                .AddConsoleExporter()
+                .AddAzureMonitorLogExporter(azMonExportOptions =>
+                {
+                    azMonExportOptions.ConnectionString = ConfigReader.Instance.ApplicationInsightConnectionString;
+                }));
 
             services.AddSingleton(services =>
             {
